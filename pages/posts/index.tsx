@@ -1,8 +1,15 @@
 import fs from 'fs';
 import matter from 'gray-matter';
+import { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import TopNavComponent from '../../components/layout/top-nav'
+import TopNavComponent from '../../components/layout/top-nav';
+import { IGrayMatterFile } from '../../interfaces/gray-matter-file';
+
+interface IProps {
+  posts: IGrayMatterFile[],
+}
+
 
 export async function getStaticProps() {
   const files = fs.readdirSync('posts');
@@ -10,10 +17,10 @@ export async function getStaticProps() {
   const posts = files.map((fileName) => {
     const slug = fileName.replace('.md', '');
     const readFile = fs.readFileSync(`posts/${fileName}`, 'utf-8');
-    const { data: frontmatter } = matter(readFile);
+    const { data: frontMatter } = matter(readFile);
     return {
       slug,
-      frontmatter,
+      frontMatter,
     };
   });
 
@@ -24,11 +31,11 @@ export async function getStaticProps() {
   };
 }
 
-export default function PostsPage({ posts }) {
+const PostsPage: NextPage<IProps> = ({ posts }) => {
   return (
     <TopNavComponent>
       <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 p-4 md:p-0'>
-        {posts.map(({ slug, frontmatter }) => (
+        {posts.map(({ slug, frontMatter }) => (
           <div
             key={slug}
             className='border border-gray-200 m-2 rounded-xl shadow-lg overflow-hidden flex flex-col'
@@ -38,10 +45,10 @@ export default function PostsPage({ posts }) {
                 <Image
                   width={650}
                   height={340}
-                  alt={frontmatter.title}
-                  src={`/${frontmatter.socialImage}`}
+                  alt={frontMatter.title}
+                  src={`/${frontMatter.socialImage}`}
                 />
-                <h1 className='p-4'>{frontmatter.title}</h1>
+                <h1 className='p-4'>{frontMatter.title}</h1>
               </a>
             </Link>
           </div>
@@ -50,3 +57,5 @@ export default function PostsPage({ posts }) {
     </TopNavComponent>
   );
 }
+
+export default PostsPage;

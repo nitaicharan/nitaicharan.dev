@@ -1,7 +1,17 @@
 import fs from 'fs';
 import matter from 'gray-matter';
 import md from 'markdown-it';
+import { GetStaticProps } from 'next';
+import { ParsedUrlQuery } from 'querystring';
 import TopNavComponent from '../../components/layout/top-nav';
+import { IGrayMatterFile } from '../../interfaces/gray-matter-file';
+
+interface Props {
+}
+
+interface Params extends ParsedUrlQuery {
+  slug: string,
+}
 
 export async function getStaticPaths() {
   const files = fs.readdirSync('posts');
@@ -16,22 +26,22 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params: { slug } }) {
-  const fileName = fs.readFileSync(`posts/${slug}.md`, 'utf-8');
-  const { data: frontmatter, content } = matter(fileName);
+export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) => {
+  const fileName = fs.readFileSync(`posts/${params!.slug}.md`, 'utf-8');
+  const { data: frontMatter, content } = matter(fileName);
   return {
     props: {
-      frontmatter,
+      frontMatter,
       content,
     },
   };
 }
 
-export default function PostPage({ frontmatter, content }) {
+export default function PostPage({ frontMatter, content }: IGrayMatterFile) {
   return (
     <TopNavComponent>
       <div className='prose mx-auto'>
-        <h1>{frontmatter.title}</h1>
+        <h1>{frontMatter.title}</h1>
         <div dangerouslySetInnerHTML={{ __html: md().render(content) }} />
       </div>
     </TopNavComponent>
