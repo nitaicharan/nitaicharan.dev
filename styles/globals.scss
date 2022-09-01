@@ -1,2 +1,7 @@
 @use "base";
 @use "abstracts";
+@use "pages";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
