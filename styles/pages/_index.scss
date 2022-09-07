@@ -1,1 +1,7 @@
-@forward 'home';
+@forward "home";
+
+main {
+  background: url("/images/matrix.gif") rgba(0, 0, 0, 0.5);
+  background-blend-mode: multiply;
+  background-position: center;
+}
